@@ -1,0 +1,12 @@
+
+.env
+
+/vendor/
+/node_modules/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+.DS_Store
+Thumbs.db
+config/serverkey.json 
