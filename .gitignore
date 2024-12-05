@@ -9,4 +9,5 @@
 
 .DS_Store
 Thumbs.db
-/config/serverkey.json 
+/config/serverkey.json
+/config/database.php
