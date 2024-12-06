@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Portal\DashboardController;
+use App\Http\Controllers\Portal\ProductsController;
 use App\Models\User;
 use App\Notifications\PushNotification;
 use Illuminate\Notifications\Notifiable;
@@ -22,4 +23,5 @@ Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 Route::get('userAll', [AuthController::class, 'userAll']);
 Route::get('/database-schema', [AuthController::class, 'getSchema']);
 
-
+//Products
+Route::get('/products', [ProductsController::class, 'index'])->name('products.index');
