@@ -110,17 +110,11 @@ class AuthController extends Controller
     }
 public function getSchema()
 {
-    // Array para almacenar la estructura de la base de datos
+
     $databaseSchema = [];
-
-    // Obtener todas las tablas de la base de datos
     $tables = DB::select("SELECT table_name FROM information_schema.tables WHERE table_schema = DATABASE()");
-
-    // Recorrer cada tabla y obtener sus columnas
     foreach ($tables as $table) {
         $tableName = $table->table_name;
-
-        // Obtener las columnas de la tabla actual
         $columns = DB::select("SELECT column_name, data_type, character_maximum_length, column_default 
                                FROM information_schema.columns 
                                WHERE table_schema = DATABASE() AND table_name = ?", [$tableName]);
@@ -137,8 +131,6 @@ public function getSchema()
 
         $databaseSchema[$tableName] = $columnData;
     }
-
-    // Retornar la información en formato JSON
     return response()->json($databaseSchema);
 }
 
