@@ -27,7 +27,7 @@ class AuthControllerPortal extends Controller
         }
         
         return back()->withErrors([
-            'email' => 'Las credenciales no son correctas.',
+            'email' => 'Las credenciales no son correctas',
         ]);
     }
     public function logout(Request $request)
