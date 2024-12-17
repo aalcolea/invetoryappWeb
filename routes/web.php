@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Portal\AuthControllerPortal;
 use App\Http\Controllers\Portal\DashboardController;
 use App\Http\Controllers\Portal\ProductsController;
 use App\Models\User;
@@ -19,9 +20,16 @@ use Illuminate\Support\Facades\Notification;
 |
 */
 
-Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 Route::get('userAll', [AuthController::class, 'userAll']);
 Route::get('/database-schema', [AuthController::class, 'getSchema']);
+//publicas
+Route::get('/login', [AuthControllerPortal::class, 'showLogin'])->name('login');
+Route::post('/login', [AuthControllerPortal::class, 'login'])->name('login.post');
+Route::post('/logout', [AuthControllerPortal::class, 'logout'])->name('logout');
+//ruta sdentro del sistema
+Route::middleware(['auth.check'])->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
+});
 //Products
 Route::get('/products', [ProductsController::class, 'index'])->name('products.index');

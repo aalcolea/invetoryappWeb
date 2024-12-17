@@ -14,8 +14,8 @@ class UsersTableSeeder extends Seeder
     public function run()
     {
         $user1 = User::create([
-            'name' => 'Doctor Uno',
-            'email' => 'doctor1@test.com',
+            'name' => 'Usuario Uno',
+            'email' => 'usuario1@test.com',
             'password' => Hash::make('1234'),
         ]);
         UserDetail::create([
@@ -28,8 +28,8 @@ class UsersTableSeeder extends Seeder
             'birthday' => '2024-04-04',
         ]);
         $user2 = User::create([
-            'name' => 'Doctor Dos',
-            'email' => 'doctor2@test.com',
+            'name' => 'Usuario Dos',
+            'email' => 'usuario2@test.com',
             'password' => Hash::make('1234'), 
         ]);
         UserDetail::create([
@@ -42,14 +42,14 @@ class UsersTableSeeder extends Seeder
             'birthday' => '2024-04-04',
         ]);        
         $user3 = User::create([
-            'name' => 'Dulce',
-            'email' => 'dulce@test.com',
+            'name' => 'Usuario Normal',
+            'email' => 'usernormal@test.com',
             'password' => Hash::make('1234'), 
         ]);
         UserDetail::create([
             'user_id' => $user3->id,
             'role_id' => 2,
-            'name' => 'Dulce',
+            'name' => 'Personal',
             'age' => 1,
             'phone' => '123456789',
             'gender' => 'F',
