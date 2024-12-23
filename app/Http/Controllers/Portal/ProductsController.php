@@ -6,13 +6,19 @@ use App\Models\Inventory\Producto;
 use App\Models\Inventory\Stock;
 use App\Models\Inventory\MovimientosStock;
 use App\Models\Inventory\Category;
+use App\Http\Resources\ProductoResource;
 
 class ProductsController extends Controller
 {
-    public function index() 
+    public function index(Request $request)
     {
-        $productos = Producto::with('stock')->get();
-        return view('Portal.products.index', compact('productos'));
+        if ($request->ajax()) {
+            $products = Producto::all();
+            return response()->json($products);
+        }
+        $products = Producto::all();
+
+        return view('Portal.products.index', compact('products'));
     }
 
     public function create()
