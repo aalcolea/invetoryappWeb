@@ -1,31 +1,34 @@
 <?php
-
 namespace App\Http\Controllers\Portal;
-
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Inventory\Producto;
+use App\Models\Inventory\Stock;
+use App\Models\Inventory\MovimientosStock;
+use App\Models\Inventory\Category;
 use App\Http\Resources\ProductoResource;
 
 class ProductsController extends Controller
 {
     public function index(Request $request)
     {
-        // Verifica si la solicitud es AJAX (para Tabulator)
         if ($request->ajax()) {
-            $products = Producto::all(); // O aplica paginación si es necesario
+            $products = Producto::all();
             return response()->json($products);
         }
         $products = Producto::all();
 
-        // Si no es AJAX, retorna la vista normal
         return view('Portal.products.index', compact('products'));
     }
-    public function create() {
-        return view('Portal.products.create');
+
+    public function create()
+    {
+        $categories = Category::all();
+        return view('Portal.products.create', compact('categories'));
     }
 
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
         $validatedData = $request->validate([
             'nombre' => 'required',
             'precio' => 'required|numeric',
@@ -38,35 +41,103 @@ class ProductsController extends Controller
             'precio.required' => 'El precio es obligatorio',
             'precio.numeric' => 'El precio debe ser un número',
             'codigo_barras.required' => 'El código de barras es obligatorio',
-            'codigo_barras.unique' => 'El código de barras ya está registrado, debe ser único',
+            'codigo_barras.unique' => 'El código de barras ya está registrado',
             'descripcion.string' => 'La descripción debe ser un texto',
             'category_id.integer' => 'El ID de la categoría debe ser un número entero',
         ]);
 
         try {
             $producto = Producto::create($validatedData);
-            $stock = Stock::where('producto_id', $producto->id)->first();
-            if ($stock) {
-                $stock->increment('cantidad', 1);
-            } else {
-                Stock::create([
-                    'producto_id' => $producto->id,
-                    'cantidad' => 1,
-                    'estado' => 'disponible'
-                ]);
-            }
+            
+            Stock::create([
+                'producto_id' => $producto->id,
+                'cantidad' => 1,
+                'estado' => 'disponible'
+            ]);
+
             MovimientosStock::create([
                 'producto_id' => $producto->id,
                 'cantidad' => 1,
                 'tipo_movimiento' => 'alta',
-                'usuario_id' => auth()->user()->id ?? null
+                'usuario_id' => auth()->id()
             ]);
-            return redirect()->route('products.index')
-                ->with('success', 'Producto creado y stock actualizado exitosamente');
 
-        } catch (\Exception $e) {
             return redirect()->route('products.index')
-                ->with('error', 'Error al crear el producto: ' . $e->getMessage());
+                           ->with('success', 'Producto creado exitosamente');
+
+        } catch(\Exception $e) {
+            return redirect()->back()
+                           ->with('error', 'Error al crear el producto: ' . $e->getMessage())
+                           ->withInput();
+        }
+    }
+
+    public function edit($id)
+    {
+        $producto = Producto::with('stock')->findOrFail($id);
+        $categories = Category::all();
+        return view('Portal.products.edit', compact('producto', 'categories'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $validatedData = $request->validate([
+            'nombre' => 'required',
+            'precio' => 'required|numeric',
+            'codigo_barras' => 'required|unique:productos,codigo_barras,' . $id,
+            'descripcion' => 'nullable|string',
+            'category_id' => 'required|integer',
+            'cant' => 'nullable|integer'
+        ]);
+
+        try {
+            $producto = Producto::findOrFail($id);
+            $cant = $request->input('cant');
+
+            $stock = Stock::where('producto_id', $producto->id)->first();
+            if(!$stock) {
+                $stock = Stock::create([
+                    'producto_id' => $producto->id,
+                    'cantidad' => 0,
+                    'estado' => 'disponible'
+                ]);
+            }
+
+            if($cant) {
+                $stock->cantidad = $cant;
+                $stock->save();
+
+                MovimientosStock::create([
+                    'producto_id' => $producto->id,
+                    'cantidad' => $cant,
+                    'tipo_movimiento' => 'ajuste',
+                    'usuario_id' => auth()->id()
+                ]);
+            }
+
+            $producto->update($validatedData);
+
+            return redirect()->route('products.index')
+                           ->with('success', 'Producto actualizado exitosamente');
+
+        } catch(\Exception $e) {
+            return redirect()->back()
+                           ->with('error', 'Error al actualizar el producto: ' . $e->getMessage())
+                           ->withInput();
+        }
+    }
+
+    public function destroy($id)
+    {
+        try {
+            $producto = Producto::findOrFail($id);
+            $producto->delete();
+            
+            return redirect()->route('products.index')
+                           ->with('success', 'Producto eliminado exitosamente');
+        } catch(\Exception $e) {
+            return redirect()->back()
+                           ->with('error', 'Error al eliminar el producto');
         }
     }
 }
