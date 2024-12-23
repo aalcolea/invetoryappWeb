@@ -33,43 +33,53 @@ class ProductoController extends Controller
         $validatedData = $request->validate([
             'nombre' => 'required',
             'precio' => 'required|numeric',
+            'precioRet' => 'nullable|numeric',
             'codigo_barras' => 'required|unique:productos,codigo_barras',
             'descripcion' => 'nullable|string',
             'category_id' => 'nullable|integer',
+            'cant' => 'nullable|integer|min:1'
         ], 
         [
             'nombre.required' => 'El nombre del producto es obligatorio',
             'precio.required' => 'El precio es obligatorio',
             'precio.numeric' => 'El precio debe ser un número',
+            'precioRet.numeric' => 'El precio retail debe ser un número',
             'codigo_barras.required' => 'El código de barras es obligatorio',
             'codigo_barras.unique' => 'El código de barras ya está registrado, debe ser único',
             'descripcion.string' => 'La descripción debe ser un texto',
             'category_id.integer' => 'El ID de la categoría debe ser un número entero',
+            'cant.integer' => 'La cantidad debe ser un número entero',
+            'cant.min' => 'La cantidad debe ser al menos 1'
         ]);
+
         try{
             $producto = Producto::create($validatedData);
+
+            $cantidad = $request->input('cant', 1);
+            
             $stock = Stock::where('producto_id', $producto->id)->first();
             if($stock){
-                $stock->increment('cantidad', 1);
+                $stock->increment('cantidad', $cantidad);
             }else{
                 Stock::create([
                     'producto_id' => $producto->id,
-                    'cantidad' => 1,
+                    'cantidad' => $cantidad,
                     'estado' => 'disponible'
                 ]);
             }
+
             MovimientosStock::create([
                 'producto_id' => $producto->id,
-                'cantidad' => 1,
+                'cantidad' => $cantidad,
                 'tipo_movimiento' => 'alta',
                 'usuario_id' => auth()->user()->id ?? null
             ]);
+
             return response()->json([
                 'success' => true,
                 'message' => 'Producto creado y stock actualizado exitosamente',
                 'data' => $producto
             ], 201);
-
         } catch(\Exception $e){
             return response()->json([
                 'success' => false,
