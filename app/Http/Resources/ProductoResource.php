@@ -21,6 +21,7 @@ class ProductoResource extends JsonResource
             'precio' => $this->precio,
             'codigo_barras' => $this->codigo_barras,
             'stock' => $this->stock, 
+            'precioRet' => $this->precioRet,
             'category_id' => $this->category_id,
             'created_at' => $this->created_at->toDateTimeString(),
             'updated_at' => $this->updated_at->toDateTimeString(),
