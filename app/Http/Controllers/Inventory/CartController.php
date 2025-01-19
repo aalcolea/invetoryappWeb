@@ -14,6 +14,7 @@ class CartController extends Controller
 {
     public function store(Request $request){
         $request->validate([
+            'tipoVenta' => 'required|boolean',
             'carrito' => 'required|array',
             'carrito.*.producto_id' => 'required|exists:productos,id',
             'carrito.*.cant_cart' => 'required|integer|min:1'
@@ -27,6 +28,7 @@ class CartController extends Controller
                 'created_at' => now(),
                 'total' => 0,
                 'cantidad' => $cantidadProductos,
+                'tipoVenta' => $request->tipoVenta 
             ]);
             foreach ($request->carrito as $item) {
                 $producto_id = $item['producto_id'];
