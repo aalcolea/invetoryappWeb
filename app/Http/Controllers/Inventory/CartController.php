@@ -26,7 +26,7 @@ class CartController extends Controller
             $datetest = now()->setTimezone('America/Mexico_City');
             $venta = Venta::create([
                 'usuario_id' => auth()->user()->id ?? null,
-                'created_at' => now()->subHours(6),
+                'created_at' => now(),
                 'total' => 0,
                 'cantidad' => $cantidadProductos,
                 'tipoVenta' => $request->tipoVenta 
