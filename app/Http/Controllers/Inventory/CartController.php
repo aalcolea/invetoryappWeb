@@ -63,7 +63,7 @@ class CartController extends Controller
             DB::commit();
             return response()->json([
                 'success' => true,
-                'message' => `Venta realizada y guardada correctamente $datetest`
+                'message' => $datetest
             ], 201);
         } catch (Exception $e) {
             DB::rollBack();
