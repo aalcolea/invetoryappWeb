@@ -70,7 +70,7 @@ return [
     */
 
     //'timezone' => 'America/Mexico_City',
-    'timezone' => env('TZ', 'UTC'),
+    'timezone' => env('TZ', 'America/Mexico_City'),
 
     /*
     |--------------------------------------------------------------------------
