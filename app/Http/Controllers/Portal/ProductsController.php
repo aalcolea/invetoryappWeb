@@ -142,6 +142,7 @@ class ProductsController extends Controller
     }
     public function testFly(){
         $products = Producto::all();
+        $products = count($products);
         return response()->json(['message' => 'Procutos dev', 'products' => $products], 201);
     }
 }
