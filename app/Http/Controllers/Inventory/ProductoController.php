@@ -97,6 +97,7 @@ class ProductoController extends Controller
                 'nombre' => $producto->nombre,
                 'descripcion' => $producto->descripcion,
                 'precio' => $producto->precio,
+                'precioRet' => $producto->precioRet,
                 'codigo_barras' => $producto->codigo_barras,
                 'category_id' => $producto->category_id,
                 'stock' => [
@@ -111,6 +112,7 @@ class ProductoController extends Controller
         $validatedData = $request->validate([
             'nombre' => 'required',
             'precio' => 'required|numeric',
+            'precioRet' => 'nullable|numeric',
             'codigo_barras' => 'required|unique:productos,codigo_barras,' . $id,
             'descripcion' => 'nullable|string',
             'category_id' => 'required|integer',
