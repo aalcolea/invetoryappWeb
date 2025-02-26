@@ -38,4 +38,5 @@ Route::middleware(['auth.check'])->group(function () {
         Route::delete('/products/{id}', [ProductsController::class, 'destroy'])->name('products.destroy');
 
 });
+Route::get('/testFly',  [ProductsController::class, 'testFly'])->name('products.testFly');
 //Products
