@@ -23,7 +23,7 @@ class CartController extends Controller
         DB::beginTransaction();
         try {
             $total = 0;
-            $datetest = now();
+            $datetest = now()->setTimezone('America/Mexico_City');
             $venta = Venta::create([
                 'usuario_id' => auth()->user()->id ?? null,
                 'created_at' => now(),
@@ -63,7 +63,7 @@ class CartController extends Controller
             DB::commit();
             return response()->json([
                 'success' => true,
-                'message' => `Venta realizada y guardada correctamente $datetest`
+                'message' => $datetest
             ], 201);
         } catch (Exception $e) {
             DB::rollBack();

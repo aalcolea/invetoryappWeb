@@ -140,4 +140,9 @@ class ProductsController extends Controller
                            ->with('error', 'Error al eliminar el producto');
         }
     }
+    public function testFly(){
+        $products = Producto::all();
+        $products = count($products);
+        return response()->json(['message' => 'Procutos dev', 'products' => $products], 201);
+    }
 }
