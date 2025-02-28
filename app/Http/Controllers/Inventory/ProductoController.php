@@ -37,7 +37,11 @@ class ProductoController extends Controller
             'codigo_barras' => 'required|unique:productos,codigo_barras',
             'descripcion' => 'nullable|string',
             'category_id' => 'nullable|integer',
-            'cant' => 'nullable|integer|min:1'
+            'cant' => 'nullable|integer|min:1',
+            'cantLoose' => 'nullable|integer',
+            'priceLoose' => 'nullable|numeric',
+            'priceRetLoose' => 'nullable|numeric',
+            'isLoose' => 'nullable|boolean'
         ], 
         [
             'nombre.required' => 'El nombre del producto es obligatorio',
@@ -92,13 +96,18 @@ class ProductoController extends Controller
         $id = (int) $id;
         $producto = Producto::with('stock')->findOrFail($id);
          return response()->json(['success' => true,
-            'data' => [
+            'dataA' => [
                 'id' => $producto->id,
                 'nombre' => $producto->nombre,
                 'descripcion' => $producto->descripcion,
                 'precio' => $producto->precio,
+                'precioRet' => $producto->precioRet,
                 'codigo_barras' => $producto->codigo_barras,
                 'category_id' => $producto->category_id,
+                'isLoose'=> $producto->isLoose, 
+                'cantLoose'=> $producto->cantLoose, 
+                'priceLoose'=> $producto->priceLoose, 
+                'priceRetLoose'=> $producto->priceRetLoose,
                 'stock' => [
                     'cantidad' => $producto->stock->cantidad ?? 0,
                     'estado' => $producto->stock->estado ?? 'no disponible'
@@ -111,10 +120,14 @@ class ProductoController extends Controller
         $validatedData = $request->validate([
             'nombre' => 'required',
             'precio' => 'required|numeric',
+            'precioRet' => 'nullable|numeric',
             'codigo_barras' => 'required|unique:productos,codigo_barras,' . $id,
             'descripcion' => 'nullable|string',
             'category_id' => 'required|integer',
-            'cant' => 'nullable|integer'
+            'cant' => 'nullable|integer',
+            'cantLoose' => 'nullable|integer|min:0',
+            'priceLoose' => 'nullable|numeric|min:0',
+            'priceRetLoose' => 'nullable|numeric|min:0'
         ], 
         [
             'nombre.required' => 'El nombre del producto es obligatorio',
