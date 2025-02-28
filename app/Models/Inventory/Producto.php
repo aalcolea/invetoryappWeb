@@ -9,7 +9,7 @@ class Producto extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['nombre', 'descripcion', 'precio', 'precioRet', 'codigo_barras', 'category_id'];
+    protected $fillable = ['nombre', 'descripcion', 'precio', 'precioRet', 'codigo_barras', 'category_id', 'isLoose', 'cantLoose', 'priceLoose', 'priceRetLoose'];
     
     public function stock(){
         return $this->hasOne(Stock::class, 'producto_id');

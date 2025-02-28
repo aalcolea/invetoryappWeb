@@ -23,6 +23,10 @@ class ProductoResource extends JsonResource
             'stock' => $this->stock, 
             'precioRet' => $this->precioRet,
             'category_id' => $this->category_id,
+            'isLoose'=> $this->isLoose, 
+            'cantLoose'=> $this->cantLoose, 
+            'priceLoose'=> $this->priceLoose, 
+            'priceRetLoose'=> $this->priceRetLoose,
             'created_at' => $this->created_at->toDateTimeString(),
             'updated_at' => $this->updated_at->toDateTimeString(),
         ];
